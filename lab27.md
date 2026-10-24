@@ -30,9 +30,8 @@ docker compose -f code/lab04/docker-compose.yml ps
 ### 2. Create topic for this lab
 
 ```bash
-docker compose -f code/lab04/docker-compose.yml exec kafka1 \
-	/opt/kafka/bin/kafka-topics.sh \
-	--bootstrap-server kafka1:29092,kafka2:29092,kafka3:29092 \
+bin/kafka-topics.sh \
+	--bootstrap-server localhost:9092 \
 	--create \
 	--topic spring-scale-demo \
 	--partitions 6 \
@@ -42,9 +41,8 @@ docker compose -f code/lab04/docker-compose.yml exec kafka1 \
 Verify:
 
 ```bash
-docker compose -f code/lab04/docker-compose.yml exec kafka1 \
-	/opt/kafka/bin/kafka-topics.sh \
-	--bootstrap-server kafka1:29092,kafka2:29092,kafka3:29092 \
+bin/kafka-topics.sh \
+	--bootstrap-server localhost:9092 \
 	--describe \
 	--topic spring-scale-demo
 ```
@@ -55,63 +53,7 @@ docker compose -f code/lab04/docker-compose.yml exec kafka1 \
 
 ### 3. Create producer project
 
-```bash
-mvn archetype:generate \
-	-DgroupId=com.example.kafka \
-	-DartifactId=spring-scale-producer \
-	-DarchetypeArtifactId=maven-archetype-quickstart \
-	-DarchetypeVersion=1.5 \
-	-DinteractiveMode=false
-
-cd spring-scale-producer
-```
-
 ### 4. Configure producer `pom.xml`
-
-Replace `pom.xml` with:
-
-```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
-		<relativePath/>
-	</parent>
-
-	<groupId>com.example.kafka</groupId>
-	<artifactId>spring-scale-producer</artifactId>
-	<version>1.0.0</version>
-
-	<properties>
-		<java.version>17</java.version>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-</project>
-```
 
 ### 5. Add producer application code
 
@@ -174,11 +116,11 @@ Create `src/main/resources/application.yml`:
 
 ```yaml
 server:
-	port: 8083
+	port: 8082
 
 spring:
 	kafka:
-		bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+		bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 		producer:
 			acks: all
 			key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -201,7 +143,7 @@ From same project folder, run with different HTTP port:
 mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8084"
 ```
 
-Now two producer instances are active: `8083` and `8084`.
+Now two producer instances are active: `8082` and `8084`.
 
 ---
 
@@ -209,65 +151,7 @@ Now two producer instances are active: `8083` and `8084`.
 
 ### 8. Create consumer project
 
-Open new terminal:
-
-```bash
-mvn archetype:generate \
-	-DgroupId=com.example.kafka \
-	-DartifactId=spring-scale-consumer \
-	-DarchetypeArtifactId=maven-archetype-quickstart \
-	-DarchetypeVersion=1.5 \
-	-DinteractiveMode=false
-
-cd spring-scale-consumer
-```
-
 ### 9. Configure consumer `pom.xml`
-
-Use same dependency structure as producer, but keep `spring-kafka` + Spring Boot starter:
-
-```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
-		<relativePath/>
-	</parent>
-
-	<groupId>com.example.kafka</groupId>
-	<artifactId>spring-scale-consumer</artifactId>
-	<version>1.0.0</version>
-
-	<properties>
-		<java.version>17</java.version>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-</project>
-```
 
 ### 10. Add consumer application code
 
@@ -327,7 +211,7 @@ Create `src/main/resources/application.yml`:
 ```yaml
 spring:
 	kafka:
-		bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+		bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 		consumer:
 			auto-offset-reset: earliest
 			key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
