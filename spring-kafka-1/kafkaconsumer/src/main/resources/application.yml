@@ -12,3 +12,6 @@ spring:
 app:
   kafka:
     topic: ${KAFKA_TOPIC:orders}
+
+server:
+  port: 8083
