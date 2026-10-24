@@ -27,83 +27,10 @@ docker compose -f code/lab04/docker-compose.yml up -d
 docker compose -f code/lab04/docker-compose.yml ps
 ```
 
-### 2. Create topic for Spring listeners
-
-```bash
-docker compose -f code/lab04/docker-compose.yml exec kafka1 \
-	/opt/kafka/bin/kafka-topics.sh \
-	--bootstrap-server kafka1:29092,kafka2:29092,kafka3:29092 \
-	--create \
-	--topic spring-multi-listener \
-	--partitions 3 \
-	--replication-factor 3
-```
-
----
-
 ## Part A: Create Spring Boot app
 
-### 3. Create Maven project
 
-```bash
-mvn archetype:generate \
-	-DgroupId=com.example.kafka \
-	-DartifactId=spring-multi-listener \
-	-DarchetypeArtifactId=maven-archetype-quickstart \
-	-DarchetypeVersion=1.5 \
-	-DinteractiveMode=false
-
-cd spring-multi-listener
-```
-
-### 4. Configure `pom.xml`
-
-Replace generated `pom.xml` with:
-
-```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
-		<relativePath/>
-	</parent>
-
-	<groupId>com.example.kafka</groupId>
-	<artifactId>spring-multi-listener</artifactId>
-	<version>1.0.0</version>
-
-	<properties>
-		<java.version>17</java.version>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-</project>
-```
-
-### 5. Add application class
+### Add application class
 
 Create `src/main/java/com/example/kafka/multi/MultiListenerApplication.java`:
 
@@ -121,7 +48,7 @@ public class MultiListenerApplication {
 }
 ```
 
-### 6. Add producer REST controller
+### Add producer REST controller
 
 Create `src/main/java/com/example/kafka/multi/OrderPublishController.java`:
 
@@ -152,7 +79,7 @@ public class OrderPublishController {
 }
 ```
 
-### 7. Add multiple listeners
+### Add multiple listeners
 
 Create `src/main/java/com/example/kafka/multi/MultiGroupListeners.java`:
 
@@ -197,7 +124,7 @@ public class MultiGroupListeners {
 }
 ```
 
-### 8. Add listener concurrency configuration
+### Add listener concurrency configuration
 
 Create `src/main/java/com/example/kafka/multi/KafkaListenerConfig.java`:
 
@@ -228,7 +155,7 @@ public class KafkaListenerConfig {
 }
 ```
 
-### 9. Add application configuration
+### Add application configuration
 
 Create `src/main/resources/application.yml`:
 
@@ -259,7 +186,7 @@ spring:
 mvn spring-boot:run
 ```
 
-### 11. Publish test events
+### Publish test events
 
 Open a new terminal and send events:
 
@@ -284,7 +211,7 @@ Observe application logs:
 
 Both groups receive all records independently.
 
-### 12. Verify consumer groups via CLI
+### Verify consumer groups via CLI
 
 ```bash
 docker compose -f code/lab04/docker-compose.yml exec kafka1 \
@@ -300,7 +227,7 @@ docker compose -f code/lab04/docker-compose.yml exec kafka1 \
 	--group billing-group
 ```
 
-### 13. Optional: add second listener in same group
+### Optional: add second listener in same group
 
 Add another method with `groupId = "analytics-group"` and different `id`, then restart app.
 
@@ -309,7 +236,7 @@ Expected behavior:
 - records are shared between listeners in the same group,
 - each record is still processed once per group.
 
-### 14. Clean up
+### Clean up
 
 Stop Spring app with `Ctrl+C`.
 
