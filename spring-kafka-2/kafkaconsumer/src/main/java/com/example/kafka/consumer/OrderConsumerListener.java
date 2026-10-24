@@ -3,6 +3,9 @@ package com.example.kafka.consumer;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.kafka.support.KafkaHeaders;
+
 @Component
 public class OrderConsumerListener {
 
