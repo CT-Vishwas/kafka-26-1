@@ -14,7 +14,7 @@ spring:
 
 app:
   kafka:
-    topic: ${KAFKA_TOPIC:spring-orders}
+    topic: ${KAFKA_TOPIC:retry-orders}
 
 server:
   port: 8083
