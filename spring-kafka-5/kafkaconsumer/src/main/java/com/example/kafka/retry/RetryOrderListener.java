@@ -23,7 +23,7 @@ public class RetryOrderListener {
 						@Header(KafkaHeaders.RECEIVED_KEY) String key,
 						@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
 						@Header(KafkaHeaders.OFFSET) long offset,
-						@Header(KafkaHeaders.GROUP_ID) string groupId
+						@Header(KafkaHeaders.GROUP_ID) String groupId
 						) {
 
 				System.out.printf("[CONSUME] topic=%s groupId=%s key=%s offset=%d value=%s%n",
@@ -49,7 +49,7 @@ public class RetryOrderListener {
 						@Header(KafkaHeaders.RECEIVED_KEY) String key,
 						@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
 						@Header(KafkaHeaders.OFFSET) long offset,
-						@Header(KafkaHeaders.GROUP_ID) string groupId) {
+						@Header(KafkaHeaders.GROUP_ID) String groupId) {
 
 				System.out.printf("[CONSUME] topic=%s groupId=%s key=%s offset=%d value=%s%n",
 								topic, key, offset, value);
@@ -68,7 +68,7 @@ public class RetryOrderListener {
 						@Header(KafkaHeaders.RECEIVED_KEY) String key,
 						@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
 						@Header(KafkaHeaders.OFFSET) long offset,
-						@Header(KafkaHeaders.GROUP_ID) string groupId) {
+						@Header(KafkaHeaders.GROUP_ID) String groupId) {
 				System.out.printf("[DLT] topic=%s groupId=%s key=%s offset=%d value=%s%n",
 								topic, groupId, key, offset, value);
 		}
