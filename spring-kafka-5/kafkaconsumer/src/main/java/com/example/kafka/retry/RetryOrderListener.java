@@ -22,9 +22,36 @@ public class RetryOrderListener {
 						String value,
 						@Header(KafkaHeaders.RECEIVED_KEY) String key,
 						@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-						@Header(KafkaHeaders.OFFSET) long offset) {
+						@Header(KafkaHeaders.OFFSET) long offset,
+						@Header(KafkaHeaders.GROUP_ID) string groupId
+						) {
 
-				System.out.printf("[CONSUME] topic=%s key=%s offset=%d value=%s%n",
+				System.out.printf("[CONSUME] topic=%s groupId=%s key=%s offset=%d value=%s%n",
+								topic, key, offset, value);
+
+				// Simulate transient/permanent failures using payload markers
+				if (value.contains("FAIL")) {
+						throw new IllegalStateException("Simulated processing failure for value=" + value);
+				}
+
+				System.out.printf("[SUCCESS] key=%s processed%n", key);
+		}
+
+		@RetryableTopic(
+						attempts = "4",                // 1 initial + 3 retries
+						backoff = @org.springframework.retry.annotation.Backoff(delay = 2000, multiplier = 2.0),
+						topicSuffixingStrategy = TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE,
+						autoCreateTopics = "true",
+						dltTopicSuffix = "-dlt")
+		@KafkaListener(topics = "retry-orders", groupId = "retry-billing-group")
+		public void consume(
+						String value,
+						@Header(KafkaHeaders.RECEIVED_KEY) String key,
+						@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+						@Header(KafkaHeaders.OFFSET) long offset,
+						@Header(KafkaHeaders.GROUP_ID) string groupId) {
+
+				System.out.printf("[CONSUME] topic=%s groupId=%s key=%s offset=%d value=%s%n",
 								topic, key, offset, value);
 
 				// Simulate transient/permanent failures using payload markers
@@ -40,8 +67,9 @@ public class RetryOrderListener {
 						String value,
 						@Header(KafkaHeaders.RECEIVED_KEY) String key,
 						@Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-						@Header(KafkaHeaders.OFFSET) long offset) {
-				System.out.printf("[DLT] topic=%s key=%s offset=%d value=%s%n",
-								topic, key, offset, value);
+						@Header(KafkaHeaders.OFFSET) long offset,
+						@Header(KafkaHeaders.GROUP_ID) string groupId) {
+				System.out.printf("[DLT] topic=%s groupId=%s key=%s offset=%d value=%s%n",
+								topic, groupId, key, offset, value);
 		}
 }
