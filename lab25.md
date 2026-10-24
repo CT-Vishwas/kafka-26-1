@@ -43,67 +43,7 @@ docker compose -f code/lab04/docker-compose.yml exec kafka1 \
 
 ## Part A: Spring Boot Producer App
 
-### 3. Create producer project
-
-```bash
-mvn archetype:generate \
-	-DgroupId=com.example.kafka \
-	-DartifactId=spring-kafka-producer \
-	-DarchetypeArtifactId=maven-archetype-quickstart \
-	-DarchetypeVersion=1.5 \
-	-DinteractiveMode=false
-
-cd spring-kafka-producer
-```
-
-### 4. Configure producer `pom.xml`
-
-Replace `pom.xml` with:
-
-```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
-		<relativePath/>
-	</parent>
-
-	<groupId>com.example.kafka</groupId>
-	<artifactId>spring-kafka-producer</artifactId>
-	<version>1.0.0</version>
-
-	<properties>
-		<java.version>17</java.version>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-</project>
-```
-
-### 5. Add producer application code
+### 3. Add producer application code
 
 Create `src/main/java/com/example/kafka/producer/ProducerApplication.java`:
 
@@ -165,7 +105,7 @@ spring:
 			value-serializer: org.apache.kafka.common.serialization.StringSerializer
 ```
 
-### 6. Run producer app
+### 4. Run producer app
 
 ```bash
 mvn spring-boot:run
@@ -177,69 +117,7 @@ Keep this terminal running.
 
 ## Part B: Spring Boot Consumer App
 
-### 7. Create consumer project
-
-Open a new terminal:
-
-```bash
-mvn archetype:generate \
-	-DgroupId=com.example.kafka \
-	-DartifactId=spring-kafka-consumer \
-	-DarchetypeArtifactId=maven-archetype-quickstart \
-	-DarchetypeVersion=1.5 \
-	-DinteractiveMode=false
-
-cd spring-kafka-consumer
-```
-
-### 8. Configure consumer `pom.xml`
-
-Use this content:
-
-```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
-		<relativePath/>
-	</parent>
-
-	<groupId>com.example.kafka</groupId>
-	<artifactId>spring-kafka-consumer</artifactId>
-	<version>1.0.0</version>
-
-	<properties>
-		<java.version>17</java.version>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-</project>
-```
-
-### 9. Add consumer application code
+### 5. Add consumer application code
 
 Create `src/main/java/com/example/kafka/consumer/ConsumerApplication.java`:
 
@@ -289,7 +167,7 @@ spring:
 			value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 ```
 
-### 10. Run consumer app
+### 6. Run consumer app
 
 ```bash
 mvn spring-boot:run
@@ -301,7 +179,7 @@ Keep this terminal running.
 
 ## End-to-end test
 
-### 11. Publish orders through producer REST endpoint
+### 7. Publish orders through producer REST endpoint
 
 In a new terminal:
 
@@ -317,7 +195,7 @@ curl -X POST "http://localhost:8081/orders/ORD-1002" \
 
 Verify consumer terminal prints both messages.
 
-### 12. Verify using Kafka CLI (optional)
+### 8. Verify using Kafka CLI (optional)
 
 ```bash
 docker compose -f code/lab04/docker-compose.yml exec kafka1 \
