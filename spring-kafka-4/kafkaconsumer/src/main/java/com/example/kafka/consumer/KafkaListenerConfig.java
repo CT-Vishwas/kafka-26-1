@@ -12,7 +12,7 @@ public class KafkaListenerConfig {
     public ConcurrentKafkaListenerContainerFactory<String, String>
             kafkaListenerContainerFactory(
                 ConsumerFactory<String, String> consumerFactory,
-                OrderRebalanceListener rebalanceListener) {
+                OrderConsumerListener rebalanceListener) {
 
         var factory =
             new ConcurrentKafkaListenerContainerFactory<String, String>();
