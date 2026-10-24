@@ -28,11 +28,11 @@ docker compose -f code/lab04/docker-compose.yml ps
 ```
 
 ### 2. Create input topic
+Go To Kafka Folder
 
 ```bash
-docker compose -f code/lab04/docker-compose.yml exec kafka1 \
-	/opt/kafka/bin/kafka-topics.sh \
-	--bootstrap-server kafka1:29092,kafka2:29092,kafka3:29092 \
+bin/kafka-topics.sh \
+	--bootstrap-server localhost:9092 \
 	--create \
 	--topic retry-orders \
 	--partitions 3 \
@@ -46,64 +46,6 @@ Spring will auto-create retry topics and DLT topics when the listener starts.
 ## Part A: Create Spring Boot app
 
 ### 3. Create Maven project
-
-```bash
-mvn archetype:generate \
-	-DgroupId=com.example.kafka \
-	-DartifactId=spring-kafka-retry-lab \
-	-DarchetypeArtifactId=maven-archetype-quickstart \
-	-DarchetypeVersion=1.5 \
-	-DinteractiveMode=false
-
-cd spring-kafka-retry-lab
-```
-
-### 4. Configure `pom.xml`
-
-Replace generated `pom.xml` with:
-
-```xml
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-				 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.5</version>
-		<relativePath/>
-	</parent>
-
-	<groupId>com.example.kafka</groupId>
-	<artifactId>spring-kafka-retry-lab</artifactId>
-	<version>1.0.0</version>
-
-	<properties>
-		<java.version>17</java.version>
-	</properties>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.kafka</groupId>
-			<artifactId>spring-kafka</artifactId>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-</project>
-```
 
 ### 5. Add application class
 
@@ -217,7 +159,7 @@ server:
 
 spring:
 	kafka:
-		bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
+		bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 		consumer:
 			auto-offset-reset: earliest
 			key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -297,16 +239,14 @@ Stop app with `Ctrl+C`.
 Delete all retry-related topics:
 
 ```bash
-docker compose -f code/lab04/docker-compose.yml exec kafka1 \
-	/opt/kafka/bin/kafka-topics.sh \
-	--bootstrap-server kafka1:29092,kafka2:29092,kafka3:29092 \
+bin/kafka-topics.sh \
+	--bootstrap-server localhost:9092 \
 	--delete --topic retry-orders
 
-docker compose -f code/lab04/docker-compose.yml exec kafka1 \
-	/opt/kafka/bin/kafka-topics.sh \
-	--bootstrap-server kafka1:29092,kafka2:29092,kafka3:29092 \
+bin/kafka-topics.sh \
+	--bootstrap-server localhost:9092 \
 	--list | grep retry-orders | xargs -r -I{} /opt/kafka/bin/kafka-topics.sh \
-	--bootstrap-server kafka1:29092,kafka2:29092,kafka3:29092 --delete --topic {}
+	--bootstrap-server localhost:9092 --delete --topic {}
 ```
 
 Stop cluster:
