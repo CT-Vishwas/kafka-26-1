@@ -15,7 +15,15 @@ import java.util.Properties;
 public class CustomerOrderTotals {
 
     public static void main(String[] args) {
+        KafkaStreams streams = createStreams("localhost:9092");
+        streams.start();
 
+        Runtime.getRuntime().addShutdownHook(
+            new Thread(streams::close)
+        );
+    }
+
+    static KafkaStreams createStreams(String bootstrapServers) {
         Properties props = new Properties();
 
         props.put(
@@ -25,7 +33,7 @@ public class CustomerOrderTotals {
 
         props.put(
             StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
-            "localhost:9092"
+            bootstrapServers
         );
 
         props.put(
@@ -74,13 +82,6 @@ public class CustomerOrderTotals {
             )
         );
 
-        KafkaStreams streams =
-            new KafkaStreams(builder.build(), props);
-
-        streams.start();
-
-        Runtime.getRuntime().addShutdownHook(
-            new Thread(streams::close)
-        );
+        return new KafkaStreams(builder.build(), props);
     }
 }
