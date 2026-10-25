@@ -5,6 +5,6 @@ scrape_configs:
   - job_name: kafka
     static_configs:
       - targets:
-          - localhost:9404
-          - localhost:9405
-          - localhost:9406
+          - kafka1:9404
+          - kafka2:9405
+          - kafka3:9406
