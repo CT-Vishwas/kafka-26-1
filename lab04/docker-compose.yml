@@ -20,8 +20,11 @@ services:
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
       KAFKA_MIN_INSYNC_REPLICAS: 2
       KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_OPTS: "-javaagent:/opt/kafka/jmx_prometheus_javaagent.jar=9404:/etc/kafka/jmx-kafka.yml"
     volumes:
       - kafka1-data:/var/lib/kafka/data
+      - ./monitoring/jmx-kafka.yml:/etc/kafka/jmx-kafka.yml:ro
+      - ./monitoring/jmx_prometheus_javaagent.jar:/opt/kafka/jmx_prometheus_javaagent.jar:ro
 
   kafka2:
     image: apache/kafka:4.3.1
@@ -44,8 +47,11 @@ services:
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
       KAFKA_MIN_INSYNC_REPLICAS: 2
       KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_OPTS: "-javaagent:/opt/kafka/jmx_prometheus_javaagent.jar=9404:/etc/kafka/jmx-kafka.yml"
     volumes:
       - kafka2-data:/var/lib/kafka/data
+      - ./monitoring/jmx-kafka.yml:/etc/kafka/jmx-kafka.yml:ro
+      - ./monitoring/jmx_prometheus_javaagent.jar:/opt/kafka/jmx_prometheus_javaagent.jar:ro
 
   kafka3:
     image: apache/kafka:4.3.1
@@ -68,8 +74,11 @@ services:
       KAFKA_DEFAULT_REPLICATION_FACTOR: 3
       KAFKA_MIN_INSYNC_REPLICAS: 2
       KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_OPTS: "-javaagent:/opt/kafka/jmx_prometheus_javaagent.jar=9404:/etc/kafka/jmx-kafka.yml"
     volumes:
       - kafka3-data:/var/lib/kafka/data
+      - ./monitoring/jmx-kafka.yml:/etc/kafka/jmx-kafka.yml:ro
+      - ./monitoring/jmx_prometheus_javaagent.jar:/opt/kafka/jmx_prometheus_javaagent.jar:ro
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -84,7 +93,24 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka1:29092,kafka2:29092,kafka3:29092
       DYNAMIC_CONFIG_ENABLED: "true"
 
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+
 volumes:
   kafka1-data:
   kafka2-data:
   kafka3-data:
+  prometheus-data:
+  grafana-data:
