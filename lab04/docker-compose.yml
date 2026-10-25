@@ -32,7 +32,7 @@ services:
     hostname: kafka2
     ports:
       - "9093:9093"
-      - "9405:9404"
+      - "9404:9405"
     environment:
       KAFKA_NODE_ID: 2
       KAFKA_PROCESS_ROLES: broker,controller
@@ -60,7 +60,7 @@ services:
     hostname: kafka3
     ports:
       - "9094:9094"
-      - "9406:9404"
+      - "9404:9406"
     environment:
       KAFKA_NODE_ID: 3
       KAFKA_PROCESS_ROLES: broker,controller
