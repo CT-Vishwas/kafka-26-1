@@ -74,11 +74,13 @@ public class CustomerOrderTotals {
                 .reduce(Long::sum);
 
         // Publish updated customer totals
-        totals.toStream().to(
+        totals.toStream()
+            .mapValues(String::valueOf)
+            .to(
             "customer-total",
             Produced.with(
                 Serdes.String(),
-                Serdes.Long()
+                Serdes.String()
             )
         );
 

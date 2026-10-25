@@ -26,7 +26,9 @@ mvn spring-boot:run
 
 Starting the consumer also starts the Kafka Streams totals processor. It reads customer IDs
 as keys and numeric string amounts from `order-amounts`, then writes updated totals to
-`customer-total` (singular). The Streams app uses the same `KAFKA_BOOTSTRAP_SERVERS` setting.
+`customer-total` (singular), with totals encoded as readable decimal strings. The Streams app
+uses the same `KAFKA_BOOTSTRAP_SERVERS` setting. Existing records already in that topic retain
+their previous binary `Long` encoding; recreate the topic if you need a clean text-only history.
 
 The consumer uses the `orders-consumer` group by default. Override it with
 `KAFKA_CONSUMER_GROUP`. When the group has no committed offset, it reads from the earliest
