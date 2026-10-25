@@ -37,6 +37,11 @@ public class CustomerOrderTotals {
         );
 
         props.put(
+            StreamsConfig.PROCESSING_GUARANTEE_CONFIG,
+            StreamsConfig.EXACTLY_ONCE_V2
+        );
+
+        props.put(
             StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,
             Serdes.String().getClass()
         );
