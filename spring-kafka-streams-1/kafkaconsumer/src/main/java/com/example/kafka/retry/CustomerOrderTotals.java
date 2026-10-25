@@ -8,7 +8,6 @@ import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Grouped;
-import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 
 import java.util.Properties;
@@ -36,21 +35,28 @@ public class CustomerOrderTotals {
 
         props.put(
             StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,
-            Serdes.Long().getClass()
+            Serdes.String().getClass()
         );
 
         StreamsBuilder builder = new StreamsBuilder();
 
-        // Read customer ID as key and order amount as value
-        KStream<String, Long> orders =
+        // Read customer ID as key and order amount as value.
+        // The producer sends numeric strings, so convert them to Long before aggregating.
+        KStream<String, String> orders =
             builder.stream(
                 "order-amounts",
-                Consumed.with(Serdes.String(), Serdes.Long())
+                Consumed.with(Serdes.String(), Serdes.String())
             );
 
-        // Group all order amounts by customer
         KTable<String, Long> totals =
             orders
+                .mapValues(value -> {
+                    try {
+                        return Long.parseLong(value);
+                    } catch (NumberFormatException e) {
+                        return 0L;
+                    }
+                })
                 .groupByKey(
                     Grouped.with(
                         Serdes.String(),
