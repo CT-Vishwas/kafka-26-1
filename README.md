@@ -48,4 +48,19 @@
 | lab27 | ultiple producers and consumers in Spring consumer groups |
 | lab28 | Retry implementation in Spring |
 | lab 29 | Kafka Streams word count
-Streams aggregation/join/windowing/filtering labs |
+|| Streams aggregation/join/windowing/filtering labs |
+| lab 30 | Kafka Connect — File source, JDBC sink, CSV import, and DB export |
+| lab 31 | Kafka security — SSL, SASL, ACLs, and secure producer/consumer flow |
+| lab 32 | Schema in Kafka (Schema Registry + Avro) |
+| lab 33 | Customer Order Totals with Kafka Streams |
+| lab 34 | Monitor Kafka with Prometheus and Grafana |
+
+# References
+
+1. [Kafka Website](https://kafka.apache.org/)
+2. [Kafka Connect](https://kafka.apache.org/44/kafka-connect/)
+3. [Kafka Streams](https://kafka.apache.org/44/streams/)
+4. [Spring for Apache Kafka](https://spring.io/projects/spring-kafka)
+5. [Deploying Kafka on Kubernetes](https://www.confluent.io/learn/kafka-on-kubernetes/)
+6. [Confluent PaaS](https://www.confluent.io/)
+7. [Kafka Definitive Guide](https://www.confluent.io/resources/ebook/kafka-the-definitive-guide)
